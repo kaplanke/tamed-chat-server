@@ -11,6 +11,10 @@
     "test": "NODE_ENV=test nodemon",
     "test-win": "SET NODE_ENV=test&&nodemon"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kaplanke/tamed-chat-server"
+  },
   "devDependencies": {
     "@types/express": "4.17.17",
     "@types/socket.io": "3.0.2",
