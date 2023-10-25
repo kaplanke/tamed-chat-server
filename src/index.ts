@@ -11,6 +11,7 @@ export class TamedChatServer {
     private webServer?: http.Server | https.Server;
     private readonly DEFAULT_PORT = 5000;
 
+    
     constructor(webServer?: http.Server | https.Server) {
         try {
 
@@ -40,5 +41,17 @@ export class TamedChatServer {
         } catch (err) {
             logger.error("Error during starting Tamed Chat!", err);
         }
+    }
+    
+    registerAuthProvider = (authProvider: (socket: any, payload: any) => Promise<any>) => {
+        ChatServer.registerAuthProvider(authProvider);
+    }
+
+    registerPastMessagesProvider =  (pastMessagesProvider: (socket: any, payload: any) => Promise<any[]>) => {
+        ChatServer.registerPastMessagesProvider(pastMessagesProvider);
+    }
+
+    registerPrivacyProvider =  (privacyProvider: (socket: any, payload: any) => Promise<boolean>) => {
+        ChatServer.registerPrivacyProvider(privacyProvider);
     }
 }
