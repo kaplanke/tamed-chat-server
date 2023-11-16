@@ -103,6 +103,7 @@ const ChatServer = {
                 this._cleanAndSend(socket.userId, payload.data.to, {
                     action: "AVCallMade",
                     offer: payload.data.offer,
+                    ic: payload.data.ic,
                     socket: socket.id
                 });
             }).catch(err => {
@@ -121,6 +122,7 @@ const ChatServer = {
                 this._cleanAndSend(socket.userId, payload.data.to, {
                     action: "AVAnswerMade",
                     answer: payload.data.answer,
+                    ic: payload.data.ic,
                     socket: socket.id
                 });
             }).catch(err => {
