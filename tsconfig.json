@@ -12,13 +12,11 @@
   },
   "include": [
     "src/**/*",
-    "test/**/*",
     "./readme.md",
     "./LICENSE.md",
     "./package.json",
     "./.*.env", 
-    "./*.js",
-    "./test/public",
+    "./*.js"
    ],
   "exclude": [],
   "hooks": [

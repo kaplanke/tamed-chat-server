@@ -1,0 +1,27 @@
+{
+  "name": "tamed-chat-srv-test",
+  "version": "0.0.1",
+  "description": "Tamed Chat Server Test",
+  "main": "index.js",
+  "author": "Kaplan",
+  "license": "MIT",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "NODE_ENV=test nodemon",
+    "test-win": "SET NODE_ENV=test&&nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kaplanke/tamed-chat-server/test"
+  },
+  "dependencies": {
+    "@aws-sdk/client-kinesis-video-signaling":"3.454.0",
+    "@aws-sdk/client-kinesis-video":"3.454.0"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.17",
+    "@types/socket.io": "3.0.2",
+    "ts-node": "10.9.1",
+    "typescript": "5.2.2"
+  }
+}
