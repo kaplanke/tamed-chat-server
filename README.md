@@ -4,6 +4,10 @@ CHECK TEST FOLDER FOR SAMPLE EXECUTION
 
 ## Change Log
 
+### 1.0.8
+
+- Text and AV call vector introduced. 
+
 ### 1.0.7
 
 - Ice server provider added

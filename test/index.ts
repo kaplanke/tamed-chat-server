@@ -34,7 +34,7 @@ chatServer.registerPrivacyProvider((socket, payload) => {
     const hash = hashCode(socket.userId) | hashCode(payload.data.to);
     tmpMessageMap[hash] = (tmpMessageMap[hash] || [])
     tmpMessageMap[hash].push({ ...payload.data, ts: Date.now() });
-    return Promise.resolve(true);
+    return Promise.resolve({ Msg: "allowed", VC: "allowed" });
 });
 chatServer.registerPastMessagesProvider((socket, payload) => {
     const hash = hashCode(socket.userId) | hashCode(payload.data.to);
@@ -72,7 +72,7 @@ chatServer.registerIceProvider(() => {
 
             const signalingChannelEndpoint = await kinesisVideoClient.send(getSignalingChannelEndpointCommand);
             const kinesisVideoSignallingClient = new AWS_KVS_SIG.KinesisVideoSignaling({
-                endpoint:signalingChannelEndpoint.ResourceEndpointList?.filter(x=>x.Protocol==="HTTPS")[0].ResourceEndpoint,
+                endpoint: signalingChannelEndpoint.ResourceEndpointList?.filter(x => x.Protocol === "HTTPS")[0].ResourceEndpoint,
                 region,
                 credentials: {
                     accessKeyId: accessKeyId,

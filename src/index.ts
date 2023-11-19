@@ -1,5 +1,5 @@
 import log4js from "@log4js-node/log4js-api";
-import express, {json,  Application } from "express";
+import express, { json, Application } from "express";
 import fs from "fs";
 import http from "http";
 import https from "https";
@@ -68,7 +68,7 @@ export class TamedChatServer {
                 res.status(HTTP_UNAUTHORIZED).send({ msg: "Unauthorized!" });
             });
         });
-        
+
         this.chatServer = new Server(this.webServer, {
             cors: {
                 origin: "*",
@@ -137,7 +137,7 @@ export class TamedChatServer {
             socket.emit("error", "Privacy provider not found!");
         } else {
             this.providers["privacy"](socket, payload).then(res => {
-                if (res) {
+                if (res.Msg === "allowed") {
                     this._cleanAndSend(socket.userId, payload.data.to, payload.data.msg);
                 } else {
                     socket.emit("error", "Privacy check failed!");
@@ -154,12 +154,16 @@ export class TamedChatServer {
             socket.emit("error", "Privacy provider not found!");
         } else {
             this.providers["privacy"](socket, payload).then(res => {
-                this._cleanAndSend(socket.userId, payload.data.to, {
-                    action: "AVCallMade",
-                    offer: payload.data.offer,
-                    ic: payload.data.ic,
-                    socket: socket.id
-                });
+                if (res.VC === "allowed") {
+                    this._cleanAndSend(socket.userId, payload.data.to, {
+                        action: "AVCallMade",
+                        offer: payload.data.offer,
+                        ic: payload.data.ic,
+                        socket: socket.id
+                    });
+                } else {
+                    socket.emit("error", "Privacy check failed!");
+                }
             }).catch(err => {
                 socket.emit("error", err.message ? { msg: err.message } : err);
             });
@@ -172,13 +176,16 @@ export class TamedChatServer {
             socket.emit("error", "Privacy provider not found!");
         } else {
             this.providers["privacy"](socket, payload).then(res => {
-
-                this._cleanAndSend(socket.userId, payload.data.to, {
-                    action: "AVAnswerMade",
-                    answer: payload.data.answer,
-                    ic: payload.data.ic,
-                    socket: socket.id
-                });
+                if (res.VC === "allowed") {
+                    this._cleanAndSend(socket.userId, payload.data.to, {
+                        action: "AVAnswerMade",
+                        answer: payload.data.answer,
+                        ic: payload.data.ic,
+                        socket: socket.id
+                    });
+                } else {
+                    socket.emit("error", "Privacy check failed!");
+                }
             }).catch(err => {
                 socket.emit("error", err.message ? { msg: err.message } : err);
             });
@@ -191,10 +198,14 @@ export class TamedChatServer {
             socket.emit("error", "Privacy provider not found!");
         } else {
             this.providers["privacy"](socket, payload).then(res => {
-                this._cleanAndSend(socket.userId, payload.data.to, {
-                    action: "AVCallClosed",
-                    socket: socket.id
-                });
+                if (res.VC === "allowed") {
+                    this._cleanAndSend(socket.userId, payload.data.to, {
+                        action: "AVCallClosed",
+                        socket: socket.id
+                    });
+                } else {
+                    socket.emit("error", "Privacy check failed!");
+                }
             }).catch(err => {
                 socket.emit("error", err.message ? { msg: err.message } : err);
             });
@@ -228,7 +239,7 @@ export class TamedChatServer {
         this.providers["pastMessages"] = pastMessagesProvider;
     }
 
-    registerPrivacyProvider = (privacyProvider: (socket: any, payload: any) => Promise<boolean>) => {
+    registerPrivacyProvider = (privacyProvider: (socket: any, payload: any) => Promise<any>) => {
         this.providers["privacy"] = privacyProvider;
     }
 
