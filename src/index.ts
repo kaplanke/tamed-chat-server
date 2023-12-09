@@ -175,20 +175,29 @@ export class TamedChatServer {
         if (!this.providers["privacy"]) {
             socket.emit("error", "Privacy provider not found!");
         } else {
-            this.providers["privacy"](socket, payload).then(res => {
-                if (res.VC === "allowed") {
-                    this._cleanAndSend(socket.userId, payload.data.to, {
-                        action: "AVAnswerMade",
-                        answer: payload.data.answer,
-                        ic: payload.data.ic,
-                        socket: socket.id
-                    });
-                } else {
-                    socket.emit("error", "Privacy check failed!");
-                }
-            }).catch(err => {
-                socket.emit("error", err.message ? { msg: err.message } : err);
-            });
+            if (payload.data.answer) {
+                this.providers["privacy"](socket, payload).then(res => {
+                    if (res.VC === "allowed") {
+                        this._cleanAndSend(socket.userId, payload.data.to, {
+                            action: "AVAnswerMade",
+                            answer: payload.data.answer,
+                            ic: payload.data.ic,
+                            socket: socket.id
+                        });
+                    } else {
+                        socket.emit("error", "Privacy check failed!");
+                    }
+                }).catch(err => {
+                    socket.emit("error", err.message ? { msg: err.message } : err);
+                });
+            } else {
+                this._cleanAndSend(socket.userId, payload.data.to, {
+                    action: "AVAnswerMade",
+                    answer: payload.data.answer,
+                    ic: payload.data.ic,
+                    socket: socket.id
+                });
+            }
         }
     }
 
