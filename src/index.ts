@@ -200,7 +200,7 @@ export class TamedChatServer {
     }
 
     __hangupAVCall = (socket: any, payload: any) => {
-        logger.debug("AV Answer ", payload);
+        logger.debug("AV Hangup ", payload);
         if (!this.providers["privacy"]) {
             socket.emit("error", "Privacy provider not found!");
         } else {
