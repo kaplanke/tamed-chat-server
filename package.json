@@ -1,6 +1,6 @@
 {
   "name": "tamed-chat-srv",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Tamed Chat Server",
   "main": "index.js",
   "author": "Kaplan",

@@ -4,7 +4,11 @@ CHECK TEST FOLDER FOR SAMPLE EXECUTION
 
 ## Change Log
 
-### 1.0.9
+### 1.0.10
+
+- Privacy added to responses. 
+
+### 1.0.10
 
 - Call Id introduced. 
 

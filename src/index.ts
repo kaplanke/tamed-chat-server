@@ -158,7 +158,8 @@ export class TamedChatServer {
                     this._cleanAndSend(socket.userId, payload.data.to, {
                         action: "AVCallMade",
                         offer: payload.data.offer,
-                        callId: payload.data.privacy.callId
+                        callId: payload.data.privacy.callId,
+                        privacy: payload.data.privacy
                     });
                 } else {
                     socket.emit("error", "Privacy check failed!");
@@ -180,7 +181,8 @@ export class TamedChatServer {
                         this._cleanAndSend(socket.userId, payload.data.to, {
                             action: "AVAnswerMade",
                             answer: payload.data.answer,
-                            callId:payload.data.privacy.callId
+                            callId: payload.data.privacy.callId,
+                            privacy: payload.data.privacy
                         });
                     } else {
                         socket.emit("error", "Privacy check failed!");
