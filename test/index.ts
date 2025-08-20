@@ -1,8 +1,8 @@
+import * as AWS_KVS from '@aws-sdk/client-kinesis-video';
+import * as AWS_KVS_SIG from '@aws-sdk/client-kinesis-video-signaling';
 import * as dotenv from "dotenv";
 import log4js from "log4js";
 import { TamedChatServer } from "../src";
-import * as AWS_KVS_SIG from '@aws-sdk/client-kinesis-video-signaling';
-import * as AWS_KVS from '@aws-sdk/client-kinesis-video';
 
 dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
 
@@ -101,3 +101,16 @@ chatServer.registerIceProvider(() => {
     });
 });
 
+// Register an endpoint to send a tamed push message to a user
+chatServer.registerEndpoint('post', '/push', (req, res) => {
+    const { toUserId, payload } = req.body;
+    if (!toUserId || !payload) {
+        return res.status(400).json({ error: "toUserId and payload are required" });
+    }
+    try {
+        chatServer.sendPushMessage(toUserId, payload);
+        res.json({ status: "Push message sent" });
+    } catch (err: any) {
+        res.status(500).json(err.message);
+    }
+});

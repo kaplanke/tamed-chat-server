@@ -24,7 +24,21 @@ export class TamedChatServer {
         this.userSockets = {};
         this.providers = {};
 
-        !app ? this.app = express() : this.app = app;
+        if (app) {
+            this.app = app;
+        } else {
+            this.app = express();
+            this.app.use(express.json())
+            this.app.use((req, res, next) => {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+                if (req.method === "OPTIONS") {
+                    return res.sendStatus(200);
+                }
+                next();
+            });
+        }
 
         if (webServer) {
             this.webServer = webServer;
@@ -240,6 +254,39 @@ export class TamedChatServer {
         }
     }
 
+    /**
+     * Sends a push message to all active sockets of a specified user.
+     *
+     * Iterates through all socket channels associated with the given user ID and sends
+     * the provided payload to each connected socket. If the user is not logged in (i.e.,
+     * no sockets are found for the user), an exception is thrown.
+     *
+     * @param toUserId - The ID of the user to whom the push message should be sent.
+     * @param payload - The message payload to send.
+     * @throws {Error} Throws an error if the user is not logged in.
+     */
+    sendPushMessage(toUserId: string, payload: object) {
+        const userSockets = this.userSockets[toUserId];
+        if (userSockets) {
+            for (const channel in userSockets) {
+                if (userSockets.hasOwnProperty(channel)) {
+                    const socket = userSockets[channel];
+                    if (socket && socket.connected) {
+                        socket.send({
+                            msg: {
+                                action: "tamedPush",
+                                data: payload
+                            }
+                        });
+                    }
+                }
+            }
+        } else {
+            throw new Error("User not logged in");
+        }
+    }
+
+
     registerAuthProvider = (authProvider: (payload: any) => Promise<any>) => {
         this.providers["auth"] = authProvider;
     }
@@ -254,6 +301,16 @@ export class TamedChatServer {
 
     registerIceProvider = (iceProvider: () => Promise<[]>) => {
         this.providers["ice"] = iceProvider;
+    }
+
+    /**
+     * Register a new HTTP endpoint on the internal Express app and web server.
+     * @param method HTTP method (e.g., 'get', 'post', 'put', 'delete')
+     * @param path Route path (e.g., '/my-endpoint')
+     * @param handler Express handler function (req, res)
+     */
+    registerEndpoint(method: 'get' | 'post' | 'put' | 'delete', path: string, handler: express.RequestHandler) {
+        this.app[method](path, handler);
     }
 
 }
