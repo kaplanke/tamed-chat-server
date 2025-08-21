@@ -13,7 +13,7 @@ Tamed Chat Server is a Node.js server for real-time chat applications with suppo
 ## Installation
 
 ```sh
-npm install tamed-chat-server
+npm install tamed-chat-srv
 ```
 
 ## Usage
